@@ -1,5 +1,5 @@
 const TestEnv = () => {
-    console.log("Hello World")
+    return "Hello World"
 }
 
-TestEnv()
+export { TestEnv }
