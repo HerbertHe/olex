@@ -3,6 +3,11 @@ import { ifOptsPackage, makeNewOLEXError } from "./utils"
 
 import { IOptions } from "../typings/options"
 import { CommandParsersType, IPackage } from "../typings/packages"
+import {
+    PackagesType,
+    ParsersType,
+    SupportedCommandsType,
+} from "../typings/core"
 
 /**
  * 默认配置项
@@ -15,11 +20,9 @@ const defaultOpts: IOptions = {
  * 初始化宏包
  * @param opts 配置项
  */
-export const setPackages = (
-    opts: IOptions | undefined
-): Map<string, IPackage> => {
+const setPackages = (opts: IOptions | undefined): PackagesType => {
     // 默认
-    let packages: Map<string, IPackage> = new Map<string, IPackage>()
+    let packages: PackagesType = new Map<string, IPackage>()
     const packagesDefaultArray = defaultOpts.packages as Array<IPackage>
     packagesDefaultArray.forEach((pack: IPackage) => {
         packages.set(pack.scope, pack)
@@ -63,46 +66,70 @@ export const setPackages = (
 /**
  * 设置配置项
  * @param opts 传入配置项
+ * @param packages 初始化之后的包
  */
-export const setOptions = (opts: IOptions | undefined): IOptions => {
+const setOptions = (
+    opts: IOptions | undefined,
+    packages: Array<IPackage>
+): IOptions => {
     if (!opts) {
         return defaultOpts
     }
     let options: IOptions = defaultOpts
     // 调用宏包整合函数
-    options.packages = [...setPackages(opts).values()]
+    options.packages = packages
     return options
 }
 
 /**
- * 初始化支持解析器
+ * 初始化网页样式渲染
+ * @param opts 配置项
  */
-export const setParsers = (
+export const setStyle = (
+    container: string | undefined,
     opts: IOptions | undefined
-): Map<string, CommandParsersType> => {
-    let parsers: Map<string, CommandParsersType> = new Map<
-        string,
-        CommandParsersType
-    >()
+): void => {
+    // 没有设置容器, 或者为"", 或者不存在节点时
+    if (!container || !document.getElementById(container)) {
+        return
+    }
+
     const packages = [...setPackages(opts).values()]
     packages.forEach((pack: IPackage) => {
-        parsers = new Map([...parsers, ...pack.parsers])
+        if (!!pack.style && !document.getElementById(pack.scope)) {
+            const cssDOM = document.createElement("link")
+            cssDOM.id = pack.scope
+            cssDOM.href = pack.style
+            cssDOM.rel = "stylesheet"
+            cssDOM.type = "text/css"
+        }
     })
-    return parsers
 }
 
 /**
- * 初始化支持的命令项
+ * 初始化函数
  */
-export const setSupportedCommands = (
+export const initialize = (
+    container: string | undefined,
     opts: IOptions | undefined
-): Set<string> => {
-    let supportedCommands = new Set<string>()
-    const packages = [...setPackages(opts).values()]
-    packages.forEach((pack: IPackage) => {
+): [IOptions, SupportedCommandsType, PackagesType, ParsersType] => {
+    const packages = setPackages(opts)
+    const packagesArray = [...packages.values()]
+    const options = setOptions(opts, packagesArray)
+
+    let supportedCommands: SupportedCommandsType = new Set<string>()
+    let parsers: ParsersType = new Map<string, CommandParsersType>()
+
+    packagesArray.forEach((pack: IPackage) => {
         for (let key of pack.parsers.keys()) {
             supportedCommands.add(key)
         }
+
+        parsers = new Map([...parsers, ...pack.parsers])
     })
-    return supportedCommands
+
+    // 设置样式
+    setStyle(container, opts)
+
+    return [options, supportedCommands, packages, parsers]
 }

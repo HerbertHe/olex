@@ -1,28 +1,31 @@
 import { CommandParsersType, IPackage } from "../typings/packages"
 import { IOptions } from "../typings/options"
-
 import {
-    setOptions,
-    setPackages,
-    setParsers,
-    setSupportedCommands,
-} from "./init"
+    PackagesType,
+    ParsersType,
+    SupportedCommandsType,
+} from "../typings/core"
+
+import { initialize } from "./init"
 
 class OLEX {
-    private _packages: Map<string, IPackage> = new Map<string, IPackage>()
-    private _parsers: Map<string, CommandParsersType> = new Map<
-        string,
-        CommandParsersType
-    >()
+    private _tex: string = ""
+    private _packages: PackagesType = new Map<string, IPackage>()
+    private _parsers: ParsersType = new Map<string, CommandParsersType>()
     private _options: IOptions = {}
-    private _supportedCommands: Set<string> = new Set<string>()
+    private _supportedCommands: SupportedCommandsType = new Set<string>()
 
     // 初始化参数
-    constructor(opts?: IOptions) {
-        this._packages = setPackages(opts)
-        this._parsers = setParsers(opts)
-        this._options = setOptions(opts)
-        this._supportedCommands = setSupportedCommands(opts)
+    constructor(tex: string, container?: string, opts?: IOptions) {
+        this._tex = tex
+        const [options, supportedCommands, packages, parsers] = initialize(
+            container,
+            opts
+        )
+        this._packages = packages
+        this._parsers = parsers
+        this._options = options
+        this._supportedCommands = supportedCommands
     }
 
     // 链式注册宏包
