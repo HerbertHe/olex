@@ -1,5 +1,1 @@
-const TestEnv = () => {
-    return "Hello World"
-}
-
-export { TestEnv }
+export { default as OLEX } from "./core/index"
