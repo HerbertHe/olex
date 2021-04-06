@@ -5,5 +5,7 @@ import { IPackage } from "./packages"
  * @param {Array<string | IPackage>} packages
  */
 export interface IOptions {
+    [index: string]: any
+
     packages?: Array<string | IPackage>
 }
