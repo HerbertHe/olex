@@ -7,3 +7,5 @@ const inlineMath = /\$([^\r\n]+)\$/
 const mathBlock = /\[([\s\S]+)\]/
 
 const newline = /\\\\/
+
+const usepackage = /\\usepackage\{([a-zA-Z0-9]+)\}/

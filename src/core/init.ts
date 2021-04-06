@@ -98,10 +98,11 @@ export const setStyle = (
     packages.forEach((pack: IPackage) => {
         if (!!pack.style && !document.getElementById(pack.scope)) {
             const cssDOM = document.createElement("link")
-            cssDOM.id = pack.scope
+            cssDOM.id = `olex-packages-style-${pack.scope}`
             cssDOM.href = pack.style
             cssDOM.rel = "stylesheet"
             cssDOM.type = "text/css"
+            document.head.appendChild(cssDOM)
         }
     })
 }
