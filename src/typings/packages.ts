@@ -1,4 +1,5 @@
 // 在此定义插件类型
+import { ParsersType } from "./core"
 
 // 命令解析类型
 export type CommandParsersType = () => string
@@ -18,5 +19,5 @@ export interface IPackage {
     version: string
     url: string
     style: string
-    parsers: Map<string, CommandParsersType>
+    parsers: ParsersType
 }

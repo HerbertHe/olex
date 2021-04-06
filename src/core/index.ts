@@ -7,6 +7,7 @@ import {
 } from "../typings/core"
 
 import { initialize } from "./init"
+import { checkPackageInfo } from "./packages"
 
 class OLEX {
     private _tex: string = ""
@@ -47,8 +48,8 @@ class OLEX {
     }
 
     // 打印单一宏包信息
-    showPackage = (packName: string) => {
-        return this._packages.get(packName)
+    showPackage = (packName: string): IPackage => {
+        return this._packages.get(packName) as IPackage
     }
 
     // 打印所有的宏包信息
@@ -66,7 +67,10 @@ class OLEX {
     }
 
     // 检查宏包信息, 包含宏包版本更新等
-    checkPackage = (packName: string) => {}
+    checkPackage = (packName: string) => {
+        const pack = this.showPackage(packName)
+        checkPackageInfo(pack)
+    }
 
     // 输出结果
     export = () => {
