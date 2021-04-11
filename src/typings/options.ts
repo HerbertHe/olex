@@ -7,5 +7,6 @@ import { IPackage } from "./packages"
 export interface IOptions {
     [index: string]: any
 
+    strict?: boolean
     packages?: Array<string | IPackage>
 }

@@ -13,6 +13,7 @@ import {
  * 默认配置项
  */
 const defaultOpts: IOptions = {
+    strict: false,
     packages: [corePackage],
 }
 
@@ -77,6 +78,7 @@ const setOptions = (
     }
     let options: IOptions = defaultOpts
     // 调用宏包整合函数
+    options.strict = !!opts.strict ? true : false
     options.packages = packages
     return options
 }

@@ -25,6 +25,6 @@ test("测试打印支持的类型", () => {
     expect(testOLEX.showSupported("sdfvr")).toBe(false)
 })
 
-test("测试打印输出", () => {
-    console.log(testOLEX.export())
-})
+// test("测试打印输出", () => {
+//     console.log(testOLEX.export())
+// })
