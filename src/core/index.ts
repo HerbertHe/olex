@@ -9,6 +9,8 @@ import {
 import { initialize } from "./init"
 import { checkPackageInfo } from "./packages"
 import { usePackage } from "./chain/use"
+import { OLEX_Lexer } from "./lex/lexer"
+import { OLEX_Parser } from "./parse/parser"
 
 class OLEX {
     private _tex: string = ""
@@ -61,13 +63,13 @@ class OLEX {
 
     // 打印所有的宏包信息
     showPackagesAll = () => {
-        return this._packages
+        return [...this._packages.keys()]
     }
 
-    // 打印支持的类型
-    showSupported = (command?: string): Set<string> | boolean => {
+    // 打印支持的命令
+    showSupported = (command?: string): Array<string> | boolean => {
         if (!command) {
-            return this._supportedCommands
+            return [...this._supportedCommands]
         } else {
             return this._supportedCommands.has(command)
         }
@@ -81,7 +83,14 @@ class OLEX {
 
     // 输出结果
     export = () => {
-        console.log(this._parsers)
+        const TexTree = OLEX_Lexer(this._tex, this._options)
+        const result = OLEX_Parser(
+            TexTree,
+            this._parsers,
+            this._supportedCommands,
+            this._options
+        )
+        console.log(result)
     }
 }
 
