@@ -17,7 +17,7 @@ export const TexAnalyzer = (tex: Array<string>): Array<IOLEXNodeTree> => {
 
 
     for(let i = 0; i < tex.length; i++) {
-        let resTmp: IOLEXNodeTree | IOLEXNode | null = null
+        let resTmp: string | null = null
 
         if (beginBlockRegex.test(tex[i])) {
             continue
