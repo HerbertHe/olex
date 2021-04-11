@@ -1,6 +1,8 @@
 const lexerRegex = /\\([a-z]+)\s*(\[([a-zA-Z0-9]+)\ ])?\s*(\{([a-zA-Z0-9\|\&\\ ]+)\})?\s*(\{([a-zA-Z0-9\|\&\\ ]+)\})?\s*[\r\n]?/g
 
-const beginBlockRegex = /\\begin\{([a-zA-Z0-9]+)\}([\s\S]+)\\end\{([a-zA-Z0-9]+)\}/
+export const beginBlockRegex = /\\begin\{([a-zA-Z0-9]+)\}/
+
+const endBlockRegex = /\\end\{([a-zA-Z0-9]+)\}/
 
 const inlineMathRegex = /\$([^\r\n]+)\$/
 

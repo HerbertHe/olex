@@ -1,8 +1,11 @@
+import { usepackageRegex } from "./regex"
+import { makeNewOLEXError } from "../utils"
+
 import { PackagesType } from "../../typings/core"
+import { IOptions } from "../../typings/options"
+import { TexAnalyzer } from "./analyzer"
 
 type PackageCheckerType = Array<boolean | string>
-
-import { usepackageRegex } from "./regex"
 
 /**
  * 包检查器
@@ -37,7 +40,31 @@ export const PackageChecker = (
 }
 
 /**
+ * Tex分割器
+ * @param tex Tex代码
+ */
+export const TexSplitter = (tex: string) => {
+    return tex.split("\n").filter((item: string) => !!item)
+}
+
+/**
  * 语法解析器
  * @param tex Tex源文件
  */
-export const OLEX_Lexer = (tex: string) => {}
+export const OLEX_Lexer = (tex: string, opts: IOptions) => {
+    const packages = opts.packages as unknown
+    const afterCheck = PackageChecker(tex, packages as PackagesType)
+
+    if (opts.strict) {
+        if (!afterCheck[0]) {
+            // 宏包不被包含
+            throw makeNewOLEXError(`Unsupported Package: ${afterCheck[1]}`)
+        }
+    }
+
+    // Tex代码分割
+    const afterSplit = TexSplitter(afterCheck[2] as string)
+
+    // 进行匹配处理
+    return TexAnalyzer(afterSplit)
+}

@@ -8,6 +8,7 @@ import {
 
 import { initialize } from "./init"
 import { checkPackageInfo } from "./packages"
+import { usePackage } from "./chain/use"
 
 class OLEX {
     private _tex: string = ""
@@ -31,10 +32,16 @@ class OLEX {
 
     // 链式注册宏包
     use = (pack: IPackage) => {
-        // 注册宏包
-        this._packages.set(pack.scope, pack)
-        // 注册解析器
-        // 注册command
+        const [packages, parsers, commands] = usePackage(
+            pack,
+            this._packages,
+            this._parsers,
+            this._supportedCommands
+        )
+
+        this._packages = packages
+        this._parsers = parsers
+        this._supportedCommands = commands
     }
 
     // 打印单一配置信息

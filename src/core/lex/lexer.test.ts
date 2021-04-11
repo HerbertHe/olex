@@ -1,4 +1,4 @@
-import { PackageChecker } from "./lexer"
+import { PackageChecker, TexSplitter } from "./lexer"
 
 const tex = `\\documnetclass{article}\n\\usepackage{sdfsfsdf}\n\\usepackage{9ubb}\n\\usepackage{example}`
 
@@ -54,4 +54,18 @@ test("测试包检查器正确", () => {
             ])
         )
     ).toEqual([true, "", "\\documnetclass{article}\n\n\n"])
+})
+
+test("测试Tex分割器", () => {
+    const afterCheker = PackageChecker(
+        tex,
+        new Map([
+            [examplePackage.scope, examplePackage],
+            ["sdfsfsdf", examplePackage],
+            ["9ubb", examplePackage],
+        ])
+    )
+    expect(TexSplitter(afterCheker[2] as string)).toEqual([
+        "\\documnetclass{article}",
+    ])
 })
