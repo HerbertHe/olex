@@ -17,7 +17,7 @@ export const PackageChecker = (
 ): PackageCheckerType => {
     if (!usepackageRegex.test(tex)) {
         // 没使用额外的包
-        return [true, "", tex.replace(usepackageRegex, "")]
+        return [true, "", tex]
     }
 
     // 注意上面会改变lastIndex的位置, 需要进行重置
