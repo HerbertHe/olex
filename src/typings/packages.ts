@@ -1,8 +1,15 @@
 // 在此定义插件类型
 import { ParsersType } from "./core"
+import { IOLEXNodeTree } from "./node"
 
 // 命令解析类型
-export type CommandParsersType = () => string
+export type CommandParsersType = ({
+    command,
+    options,
+    group,
+    value,
+    children
+}: IOLEXNodeTree) => string
 
 /**
  * 宏包类型
