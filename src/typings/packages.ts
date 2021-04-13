@@ -18,6 +18,7 @@ export type CommandParsersType = ({
  * @param {string} version 版本信息
  * @param {string} url 宏包仓库
  * @param {string} style 自定义样式
+ * @param {any} mount 参数初始化声明
  * @param {any} parsers 解析器
  */
 export interface IPackage {
@@ -26,5 +27,9 @@ export interface IPackage {
     version: string
     url: string
     style: string
+    mount?: any
+    // documentclassParsers 文档类型宏解析器支持
+    // beginEnvParsers: 自定义环境解析器支持
+    // commandParsers: ParsersType 命令解析器支持
     parsers: ParsersType
 }

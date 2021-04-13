@@ -3,7 +3,7 @@
 export interface IOLEXNode {
     command: string
     options: Array<string | IOLEXNode> | null
-    group: string | null
+    group: Array<string> | null
     value?: string
 }
 

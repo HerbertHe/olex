@@ -40,7 +40,7 @@ const setPackages = (opts: IOptions | undefined): PackagesType => {
                 // 全局变量不存在
                 throw makeNewOLEXError("Global Variable window is not defined!")
             } else if (
-                window[`OLEX_PACKAGE_${pack}`] &&
+                !!window[`OLEX_PACKAGE_${pack}`] &&
                 !!window[`OLEX_PACKAGE_${pack}`].scope
             ) {
                 // 注册全局合法包
@@ -135,4 +135,18 @@ export const initialize = (
     setStyle(container, opts)
 
     return [options, supportedCommands, packages, parsers]
+}
+
+/**
+ * 宏包初始化参数挂载生命周期
+ * @param that 上游this指针
+ * @param packages 已注册包
+ */
+export const mount = (that: any, packages: PackagesType): void => {
+    [...packages.values()].forEach((item: IPackage) => {
+        if(!!item.mount) {
+            // 实例this指针传递
+            item.mount.call(that)
+        }
+    })
 }
