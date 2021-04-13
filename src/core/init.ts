@@ -136,17 +136,3 @@ export const initialize = (
 
     return [options, supportedCommands, packages, parsers]
 }
-
-/**
- * 宏包初始化参数挂载生命周期
- * @param that 上游this指针
- * @param packages 已注册包
- */
-export const mount = (that: any, packages: PackagesType): void => {
-    [...packages.values()].forEach((item: IPackage) => {
-        if(!!item.mount) {
-            // 实例this指针传递
-            item.mount.call(that)
-        }
-    })
-}

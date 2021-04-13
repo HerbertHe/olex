@@ -6,7 +6,9 @@ import {
     SupportedCommandsType,
 } from "../typings/core"
 
-import { initialize, mount } from "./init"
+import { mount } from "./lifecycle/mount"
+
+import { initialize } from "./init"
 import { checkPackageInfo } from "./packages"
 import { usePackage } from "./chain/use"
 import { OLEX_Lexer } from "./lex/lexer"
@@ -86,13 +88,22 @@ class OLEX {
         checkPackageInfo(pack)
     }
 
-    // setContextVariable("variable name", "value") 设置上下文变量方法
-    setContextVariable = (name: string, value: any) => {
-        this._context.set(name, value)
+    /**
+     * 自定义上下文参量
+     * @param scope 宏包作用域
+     * @param name 参数名
+     * @param value 参数值
+     */
+    setContextVariable = (scope: string, name: string, value: any) => {
+        this._context.set(`${scope}-${name}`, value)
     }
-    // getContextVariable(this._context, "variable name") 获取上下文变量方法
-    getContextVariable = (name: string) => {
-        return this._context.get(name)
+    /**
+     * 获取自定义的上下文参量
+     * @param scope 宏包作用域
+     * @param name 参数名
+     */
+    getContextVariable = (scope: string, name: string) => {
+        return this._context.get(`${scope}-${name}`)
     }
 
     // 输出结果
