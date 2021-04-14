@@ -1,5 +1,5 @@
 import { corePackage } from "../packages/core"
-import { ifOptsPackage, makeNewOLEXError } from "./utils"
+import { ifBrowser, ifOptsPackage, makeNewOLEXError } from "./utils"
 
 import { IOptions } from "../typings/options"
 import { CommandParsersType, IPackage } from "../typings/packages"
@@ -36,9 +36,11 @@ const setPackages = (opts: IOptions | undefined): PackagesType => {
     opts.packages?.forEach((pack) => {
         if (typeof pack === "string") {
             // 类型为字符串, 在window对象查找解析器
-            if (!window) {
-                // 全局变量不存在
-                throw makeNewOLEXError("Global Variable window is not defined!")
+            if (!ifBrowser()) {
+                // 不在浏览器环境
+                throw makeNewOLEXError(
+                    "The string pack setting only can be used in Browser Environment!"
+                )
             } else if (
                 !!window[`OLEX_PACKAGE_${pack}`] &&
                 !!window[`OLEX_PACKAGE_${pack}`].scope

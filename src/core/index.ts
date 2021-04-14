@@ -13,9 +13,17 @@ import { checkPackageInfo } from "./packages"
 import { usePackage } from "./chain/use"
 import { OLEX_Lexer } from "./lex/lexer"
 import { OLEX_Parser } from "./parse/parser"
+import { ifBrowser, makeNewOLEXError } from "./utils"
+
+interface IOLEXConstructor {
+    tex: string
+    container?: string
+    opts?: IOptions
+}
 
 class OLEX {
     private _tex: string = ""
+    private _container: string | undefined = ""
     private _options: IOptions = {}
     // 上下文参数
     private _context: Map<string, any> = new Map<string, any>()
@@ -24,8 +32,9 @@ class OLEX {
     private _supportedCommands: SupportedCommandsType = new Set<string>()
 
     // 初始化参数
-    constructor(tex: string, container?: string, opts?: IOptions) {
+    constructor({ tex, container, opts }: IOLEXConstructor) {
         this._tex = tex
+        this._container = container
         const [options, supportedCommands, packages, parsers] = initialize(
             container,
             opts
@@ -116,6 +125,24 @@ class OLEX {
             this._options
         )
         console.log(result)
+    }
+
+    // 网页渲染
+    render = () => {
+        if (!!this._container) {
+            if (!!ifBrowser()) {
+                // 浏览器环境
+                // 获取盒子渲染
+                const containerBox = document.getElementById(this._container)
+                // console.log(window)
+            } else {
+                throw makeNewOLEXError(
+                    "The render function only can be used in Browser Environment!"
+                )
+            }
+        } else {
+            throw makeNewOLEXError("Container has not been set!")
+        }
     }
 }
 

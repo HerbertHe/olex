@@ -1,4 +1,4 @@
-import OLEX from "../core"
+import { IOLEXContext } from "../typings/core"
 import { CommandParsersType, IPackage } from "../typings/packages"
 
 const scope = "olex-core"
@@ -7,7 +7,7 @@ const scope = "olex-core"
  * 挂载生命周期
  * @param this OLEX对象实例指针
  */
-function mount(this: OLEX) {
+function mount(this: IOLEXContext) {
     this.setContextVariable(scope, "测试", "自定义上下文参数测试")
     console.log(this.getContextVariable(scope, "测试"))
 }

@@ -1,7 +1,5 @@
 import { OLEX } from "./index"
 
-const testOLEX = new OLEX("")
-
 const testPackage = {
     scope: "test",
     author: "HerbertHe",
@@ -45,7 +43,21 @@ const testPackage = {
 //     console.log(testOLEX.export())
 // })
 
-test("测试链式包注册", () => {
-    testOLEX.use(testPackage)
-    console.log(testOLEX.showPackagesAll())
-})
+// test("测试链式包注册", () => {
+//     testOLEX.use(testPackage)
+//     console.log(testOLEX.showPackagesAll())
+// })
+
+// test("测试包初始化注册报错", () => {
+//     const testOLEX = new OLEX({
+//         tex: "",
+//         opts: {
+//             packages: ["34234"],
+//         },
+//     })
+// })
+
+// test("测试渲染函数报错", () => {
+//     const testOLEX = new OLEX({ tex: "", container: "dsd" })
+//     testOLEX.render()
+// })

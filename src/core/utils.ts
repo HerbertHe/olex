@@ -12,3 +12,10 @@ export const ifOptsPackage = (opts: IOptions | undefined): boolean => {
     if (!opts || !opts.packages) return false
     return true
 }
+
+/**
+ * 判断当前是否处于浏览器环境
+ */
+export const ifBrowser = (): boolean => {
+    return this === window
+}

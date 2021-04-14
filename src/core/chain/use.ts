@@ -33,7 +33,7 @@ export const usePackage = (
     parsers = new Map([...parsers, ...pack.parsers])
 
     // 更新对象属性
-    update()
+    // update()
 
     return [packages, parsers, commands]
 }
