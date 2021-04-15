@@ -5,6 +5,7 @@ import {
     ParsersType,
     SupportedCommandsType,
 } from "../typings/core"
+import { version } from "../../package.json"
 
 import { mount } from "./lifecycle/mount"
 
@@ -30,6 +31,7 @@ class OLEX {
     private _packages: PackagesType = new Map<string, IPackage>()
     private _parsers: ParsersType = new Map<string, CommandParsersType>()
     private _supportedCommands: SupportedCommandsType = new Set<string>()
+    private readonly _version = version
 
     // 初始化参数
     constructor({ tex, container, opts }: IOLEXConstructor) {
@@ -51,6 +53,7 @@ class OLEX {
     // 链式注册宏包
     use = (pack: IPackage) => {
         const [packages, parsers, commands] = usePackage(
+            this,
             pack,
             this._packages,
             this._parsers,
@@ -89,6 +92,11 @@ class OLEX {
         } else {
             return this._supportedCommands.has(command)
         }
+    }
+
+    // 打印版本信息
+    version = (): string => {
+        return this._version
     }
 
     // 检查宏包信息, 包含宏包版本更新等

@@ -13,7 +13,8 @@
     "build:types": "tsc --emitDeclarationOnly",
     "build:js": "rollup -c",
     "build:css": "<支持tailwind>",
-    "test": "jest --coverage"
+    "test": "jest",
+    "test:coverage": "jest --coverage"
   },
   "repository": "https://github.com/HerbertHe/olex.git",
   "author": "HerbertHe <Herbert.He0229@gmail.com>",
@@ -27,6 +28,7 @@
     "@babel/preset-typescript": "^7.13.0",
     "@rollup/plugin-babel": "^5.3.0",
     "@rollup/plugin-commonjs": "^17.1.0",
+    "@rollup/plugin-json": "^4.1.0",
     "@rollup/plugin-node-resolve": "^11.2.0",
     "@types/jest": "^26.0.21",
     "babel-jest": "^26.6.3",

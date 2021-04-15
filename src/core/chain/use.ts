@@ -1,3 +1,4 @@
+import OLEX from ".."
 import {
     PackagesType,
     ParsersType,
@@ -15,6 +16,7 @@ import { update } from "../lifecycle/update"
  * @param commands 对象支持的命令
  */
 export const usePackage = (
+    that: OLEX,
     pack: IPackage,
     packages: PackagesType,
     parsers: ParsersType,
@@ -33,7 +35,7 @@ export const usePackage = (
     parsers = new Map([...parsers, ...pack.parsers])
 
     // 更新对象属性
-    // update()
+    update(that)
 
     return [packages, parsers, commands]
 }
