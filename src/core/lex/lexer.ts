@@ -86,7 +86,7 @@ interface ITOKEN {
     place: number
 }
 
-class Lexer {
+export class Lexer {
     private raw: string
     private length: number
     private index: number
@@ -179,5 +179,9 @@ class Lexer {
         }
         this.index += 1
         return { type, value, place }
+    }
+
+    goBack = (i: number) => {
+        this.index -= i
     }
 }
