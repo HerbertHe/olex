@@ -12,7 +12,7 @@ import { mount } from "./lifecycle/mount"
 import { initialize } from "./init"
 import { checkPackageInfo } from "./packages"
 import { usePackage } from "./chain/use"
-import { OLEX_Lexer } from "./lex/lexer"
+// import { OLEX_Lexer } from "./lex/lexer"
 import { OLEX_Parser } from "./parse/parser"
 import { ifBrowser, makeNewOLEXError } from "./utils"
 
@@ -125,14 +125,14 @@ class OLEX {
 
     // 输出结果
     export = () => {
-        const TexTree = OLEX_Lexer(this._tex, this._options)
-        const result = OLEX_Parser(
-            TexTree,
-            this._parsers,
-            this._supportedCommands,
-            this._options
-        )
-        console.log(result)
+        // const TexTree = OLEX_Lexer(this._tex, this._options)
+        // const result = OLEX_Parser(
+        //     TexTree,
+        //     this._parsers,
+        //     this._supportedCommands,
+        //     this._options
+        // )
+        // console.log(result)
     }
 
     // 网页渲染

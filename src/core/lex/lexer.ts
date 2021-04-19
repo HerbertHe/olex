@@ -3,7 +3,6 @@ import { makeNewOLEXError } from "../utils"
 
 import { PackagesType } from "../../typings/core"
 import { IOptions } from "../../typings/options"
-import { TexAnalyzer } from "./analyzer"
 
 type PackageCheckerType = Array<boolean | string>
 
@@ -40,12 +39,12 @@ export const PackageChecker = (
 }
 
 /**
- * Tex分割器
+ * Tex分割器（已废弃）
  * @param tex Tex代码
  */
-export const TexSplitter = (tex: string) => {
-    return tex.split("\n").filter((item: string) => !!item)
-}
+// export const TexSplitter = (tex: string) => {
+//     return tex.split("\n").filter((item: string) => !!item)
+// }
 
 /**
  * 语法解析器
@@ -90,13 +89,13 @@ export class Lexer {
     private raw: string
     private length: number
     private index: number
-    private modend: number
+    private modEnd: number
     private ended: boolean = false
-    constructor(raw: string, modstart: number, modend: number) {
+    constructor(raw: string, modStart: number, modEnd: number) {
         this.raw = raw
         this.length = raw.length
-        this.index = modstart
-        this.modend = modend
+        this.index = modStart
+        this.modEnd = modEnd
     }
 
     atLast = (): boolean => {
@@ -104,9 +103,10 @@ export class Lexer {
     }
 
     atEnding = () => {
-        return this.index >= this.modend
+        return this.index >= this.modEnd
     }
 
+    // TODO: 可以考虑之后将数字和字符进行合并
     nextToken = (): ITOKEN => {
         let type = "",
             value = "",

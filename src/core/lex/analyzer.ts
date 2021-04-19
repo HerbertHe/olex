@@ -1,31 +1,91 @@
-import { beginBlockRegex } from "./regex"
-
-import { IOLEXNode, IOLEXNodeTree } from "../../typings/node"
-import { TextNodeMaker } from "./node"
+import { Lexer, PackageChecker } from "./lexer"
 
 /**
- * Tex语法分析器
- * @param tex 处理之后的Tex数组
+ * TODO: 考虑干掉argArray这个参数
  */
-export const TexAnalyzer = (tex: Array<string>): Array<IOLEXNodeTree> => {
-    /**
-     * 1) 先分析特殊块, 比如begin、end、$$
-     * 2) 都匹配不上的则为TextNode
-     * 3) 当字符串处理最简单
-     */
-    let TexTree: Array<IOLEXNodeTree> = []
+interface ITree {
+    mode: string
+    name: string
+    from: number
+    to: null
+    value: string
+    argArray: Array<string>
+    parent: null
+    children: Array<null>
+}
 
+class Syner {
+    private innerTree: ITree | null = null
+    private type: string = ""
+    private value: string | number = ""
+    private place: number = -1
+    private mathEnv: string = "" // 未知用途参数
+    private intabular: boolean = false
+    private omispace: boolean = false // 省略空间
 
-    for(let i = 0; i < tex.length; i++) {
-        let resTmp: string | null = null
+    private nodePlace: ITree | null = null
+    private nodeLevel: number = 0
+    private nodeArray: Array<null> = []
 
-        if (beginBlockRegex.test(tex[i])) {
-            continue
+    initTree = () => {
+        this.innerTree = {
+            mode: "document",
+            name: "tree",
+            from: 0,
+            to: null,
+            value: "",
+            argArray: [],
+            parent: null,
+            children: [],
         }
-
-        // 最后兜底为TextNode
-        resTmp = TextNodeMaker(tex[i])
+        this.nodePlace = this.innerTree
+        this.nodeLevel = 0
+        this.nodeArray = []
     }
 
-    return TexTree
+    // 循环分析词法
+    mainLoop = () => {
+        switch (this.type) {
+            case "escape":
+                break
+            // ...
+        }
+    }
+
+    closeGroup = (pos: number) => {
+        // Line 1965
+        // let node = this.nodePlace, argType = node?.argTypes
+    }
+
+    analysis = (raw: string, modstart: number, modend: number) => {
+        // 包检查器,过滤
+        // const tex= PackageChecker()
+        // 初始化词法分析器
+        const lexer = new Lexer(raw, modstart, modend)
+        // 初始化语法树
+        this.initTree()
+        this.mathEnv = ""
+        this.omispace = false
+        // 这里省略了, 设计了全新的架构
+        // typejax.innersect = []
+        // this.packages = packages
+        // this.cmdvalues = latex.cmdvalues
+        // this.counters = latex.counters
+        // this.theorems = latex.theorems
+
+        // this.openNewGroup("env", "par", modstart)
+
+        while (!lexer.atLast()) {
+            const { type, value, place } = lexer.nextToken()
+            this.type = type
+            this.value = value
+            this.place = place
+            this.mainLoop()
+        }
+
+        // this.closeOldMath(lexer.modend)
+        while(this.nodeLevel > 0) {
+            this.closeGroup()
+        }
+    }
 }
