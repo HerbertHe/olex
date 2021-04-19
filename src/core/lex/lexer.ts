@@ -51,20 +51,133 @@ export const TexSplitter = (tex: string) => {
  * 语法解析器
  * @param tex Tex源文件
  */
-export const OLEX_Lexer = (tex: string, opts: IOptions) => {
-    const packages = opts.packages as unknown
-    const afterCheck = PackageChecker(tex, packages as PackagesType)
+// export const OLEX_Lexer = (tex: string, opts: IOptions) => {
+//     const packages = opts.packages as unknown
+//     const afterCheck = PackageChecker(tex, packages as PackagesType)
 
-    if (opts.strict) {
-        if (!afterCheck[0]) {
-            // 宏包不被包含
-            throw makeNewOLEXError(`Unsupported Package: ${afterCheck[1]}`)
-        }
+//     if (opts.strict) {
+//         if (!afterCheck[0]) {
+//             // 宏包不被包含
+//             throw makeNewOLEXError(`Unsupported Package: ${afterCheck[1]}`)
+//         }
+//     }
+
+//     // Tex代码分割
+//     const afterSplit = TexSplitter(afterCheck[2] as string)
+
+//     // 进行匹配处理
+//     return TexAnalyzer(afterSplit)
+// }
+
+enum CHAR_TYPE {
+    ESCAPE = "escape",
+    COMMENT = "comment",
+    SPACE = "space",
+    NEWLINE = "newline",
+    SPECIAL = "special",
+    ALPHABET = "alphabet",
+    NUMBER = "number",
+    UNICODE = "unicode",
+}
+
+interface ITOKEN {
+    type: string
+    value: string | number
+    place: number
+}
+
+class Lexer {
+    private raw: string
+    private length: number
+    private index: number
+    private modend: number
+    private ended: boolean = false
+    constructor(raw: string, modstart: number, modend: number) {
+        this.raw = raw
+        this.length = raw.length
+        this.index = modstart
+        this.modend = modend
     }
 
-    // Tex代码分割
-    const afterSplit = TexSplitter(afterCheck[2] as string)
+    atLast = (): boolean => {
+        return this.index >= this.length || this.ended === true
+    }
 
-    // 进行匹配处理
-    return TexAnalyzer(afterSplit)
+    atEnding = () => {
+        return this.index >= this.modend
+    }
+
+    nextToken = (): ITOKEN => {
+        let type = "",
+            value = "",
+            place = this.index
+        if (this.atLast()) {
+            return { type: "", value: "", place: this.length }
+        }
+        // if atEnding
+
+        let curchar = this.raw.charAt(this.index)
+        let nextchar = "",
+            nextcode = 0,
+            i = 0
+
+        if (curchar === "\\") {
+            type = CHAR_TYPE.ESCAPE
+            value = "\\"
+        } else if (curchar === "%") {
+            type = CHAR_TYPE.COMMENT
+            value = "%"
+        } else if (curchar === " ") {
+            type = CHAR_TYPE.SPACE
+            value = " "
+        } else if (curchar === "\n") {
+            type = CHAR_TYPE.NEWLINE
+            value = "\n"
+        } else if (curchar === "\r") {
+            nextchar = this.raw.charAt(this.index + 1)
+            if (nextchar === "\n") {
+                // 处理CRLF
+                type = CHAR_TYPE.NEWLINE
+                value = "\n"
+                this.index += 1
+            } else {
+                // 处理CR
+                type = CHAR_TYPE.NEWLINE
+                value = "\n"
+            }
+        } else if (/[\!-\$&-\/\:-@\[-`\{-~]/.test(curchar)) {
+            // 引用自typejax
+            type = CHAR_TYPE.SPECIAL
+            value = curchar
+        } else if (/[a-zA-Z]/.test(curchar)) {
+            i = this.index
+            do {
+                i += 1
+                nextchar = this.raw.charAt(i)
+            } while (/[a-zA-Z]/.test(nextchar))
+            type = CHAR_TYPE.ALPHABET
+            value = this.raw.substring(this.index, i)
+            this.index = i - 1
+        } else if (/[0-9]/.test(curchar)) {
+            i = this.index
+            do {
+                i += 1
+                nextchar = this.raw.charAt(i)
+            } while (/[0-9]/.test(nextchar))
+            type = CHAR_TYPE.NUMBER
+            value = this.raw.substring(this.index, i)
+            this.index = i - 1
+        } else {
+            i = this.index
+            do {
+                i += 1
+                nextcode = this.raw.charCodeAt(i)
+            } while (nextcode > 127)
+            type = CHAR_TYPE.UNICODE
+            value = this.raw.substring(this.index, i)
+            this.index = i - 1
+        }
+        this.index += 1
+        return { type, value, place }
+    }
 }
