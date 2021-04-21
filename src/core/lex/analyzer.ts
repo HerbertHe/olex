@@ -1,4 +1,14 @@
-import { Lexer, PackageChecker } from "./lexer"
+import { Lexer, PackageChecker, CHAR_TYPE } from "./lexer"
+import {
+    tokenEscape,
+    tokenComment,
+    tokenSpace,
+    tokenNewline,
+    tokenSpecial,
+    tokenAlphabet,
+    tokenNumber,
+    tokenUnicode,
+} from "./tokenizer"
 
 /**
  * TODO: 考虑干掉argArray这个参数
@@ -14,7 +24,7 @@ interface ITree {
     children: Array<null>
 }
 
-class Syner {
+export class Syner {
     private innerTree: ITree | null = null
     private type: string = ""
     private value: string | number = ""
@@ -46,9 +56,31 @@ class Syner {
     // 循环分析词法
     mainLoop = () => {
         switch (this.type) {
-            case "escape":
+            case CHAR_TYPE.ESCAPE:
+                tokenEscape.call(this)
                 break
             // ...
+            case CHAR_TYPE.COMMENT:
+                tokenComment.call(this)
+                break
+            case CHAR_TYPE.SPACE:
+                tokenSpace.call(this)
+                break
+            case CHAR_TYPE.NEWLINE:
+                tokenNewline.call(this)
+                break
+            case CHAR_TYPE.SPECIAL:
+                tokenSpecial.call(this)
+                break
+            case CHAR_TYPE.ALPHABET:
+                tokenAlphabet.call(this)
+                break
+            case CHAR_TYPE.NUMBER:
+                tokenNumber.call(this)
+                break
+            case CHAR_TYPE.UNICODE:
+                tokenUnicode.call(this)
+                break
         }
     }
 
@@ -84,8 +116,8 @@ class Syner {
         }
 
         // this.closeOldMath(lexer.modend)
-        while(this.nodeLevel > 0) {
-            this.closeGroup()
+        while (this.nodeLevel > 0) {
+            // this.closeGroup()
         }
     }
 }

@@ -68,7 +68,7 @@ export const PackageChecker = (
 //     return TexAnalyzer(afterSplit)
 // }
 
-enum CHAR_TYPE {
+export enum CHAR_TYPE {
     ESCAPE = "escape",
     COMMENT = "comment",
     SPACE = "space",
