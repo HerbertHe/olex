@@ -1,4 +1,5 @@
 import { Lexer, PackageChecker, CHAR_TYPE } from "./lexer"
+import { createTextNode } from "./node"
 import {
     tokenEscape,
     tokenComment,
@@ -13,15 +14,17 @@ import {
 /**
  * TODO: 考虑干掉argArray这个参数
  */
-interface ITree {
+export interface ITree {
+    type?: string // ? 参数类型
     mode: string
     name: string
     from: number
-    to: null
+    to: number | null
     value: string
-    argArray: Array<string>
-    parent: null
-    children: Array<null>
+    parent: ITree | null
+    children: Array<ITree>
+    argArray?: Array<string>
+    argType?: Array<null>
 }
 
 export class Syner {
@@ -39,12 +42,13 @@ export class Syner {
 
     initTree = () => {
         this.innerTree = {
-            mode: "document",
-            name: "tree",
+            mode: "root",
+            name: "root",
             from: 0,
             to: null,
             value: "",
             argArray: [],
+            argType: [],
             parent: null,
             children: [],
         }
@@ -53,39 +57,76 @@ export class Syner {
         this.nodeArray = []
     }
 
+    appendValue = (node: ITree | any, value: string, pos: number) => {
+        if (!node) {
+            // BUG node错误
+            return
+        }
+
+        // 没有子节点则判断为文本节点
+        if (node.children.length === 0) {
+            createTextNode(node)
+        }
+
+        // 如果是数学公式
+        if (node.name === "bmath" || node.name === "imath") {
+            node.value += value
+        } else if (node.mode === "block" || node.mode === "inline") {
+            // BUG 节点模式为块级或者行内, 值追加？
+            node.children[node.children.length - 1].value += value
+        }
+    }
+
+    appendText = (value: string, pos: number) => {
+        let node = this.nodePlace
+        this.appendValue(node, value, pos)
+    }
+
+    addText = (value: string, pos: number) => {
+        let n = value.length
+        let node = this.nodePlace
+        // BUG 未知参数argArray
+        if (node?.argArray.length === node?.argType.length) {
+            this.appendText(value, pos)
+        } else {
+            let i = node?.argArray?.length
+            while(i < node?.argType?.length && value) {
+
+            }
+        }
+    }
+
     // 循环分析词法
-    mainLoop = () => {
+    mainLoop = (lexer: Lexer) => {
         switch (this.type) {
             case CHAR_TYPE.ESCAPE:
-                tokenEscape.call(this)
+                tokenEscape.call(this, lexer)
                 break
-            // ...
             case CHAR_TYPE.COMMENT:
-                tokenComment.call(this)
+                tokenComment.call(this, lexer)
                 break
             case CHAR_TYPE.SPACE:
-                tokenSpace.call(this)
+                tokenSpace.call(this, lexer)
                 break
             case CHAR_TYPE.NEWLINE:
-                tokenNewline.call(this)
+                tokenNewline.call(this, lexer)
                 break
             case CHAR_TYPE.SPECIAL:
-                tokenSpecial.call(this)
+                tokenSpecial.call(this, lexer)
                 break
             case CHAR_TYPE.ALPHABET:
-                tokenAlphabet.call(this)
+                tokenAlphabet.call(this, lexer)
                 break
             case CHAR_TYPE.NUMBER:
-                tokenNumber.call(this)
+                tokenNumber.call(this, lexer)
                 break
             case CHAR_TYPE.UNICODE:
-                tokenUnicode.call(this)
+                tokenUnicode.call(this, lexer)
                 break
         }
     }
 
     closeGroup = (pos: number) => {
-        // Line 1965
         // let node = this.nodePlace, argType = node?.argTypes
     }
 
@@ -112,7 +153,7 @@ export class Syner {
             this.type = type
             this.value = value
             this.place = place
-            this.mainLoop()
+            this.mainLoop(lexer)
         }
 
         // this.closeOldMath(lexer.modend)

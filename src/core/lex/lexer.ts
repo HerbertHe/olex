@@ -81,7 +81,7 @@ export enum CHAR_TYPE {
 
 interface ITOKEN {
     type: string
-    value: string | number
+    value: string
     place: number
 }
 
