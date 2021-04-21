@@ -98,23 +98,42 @@ export class Lexer {
         this.modEnd = modEnd
     }
 
+    /**
+     * 是否字符串应当自动结束
+     */
     atLast = (): boolean => {
         return this.index >= this.length || this.ended === true
     }
 
+    /**
+     * 是否手动结束
+     */
     atEnding = () => {
         return this.index >= this.modEnd
     }
 
-    // TODO: 可以考虑之后将数字和字符进行合并
     nextToken = (): ITOKEN => {
         let type = "",
             value = "",
             place = this.index
+
         if (this.atLast()) {
             return { type: "", value: "", place: this.length }
         }
-        // if atEnding
+
+        // if (this.atEnding()) {
+        //     const d = syner.nodeArray
+        //     if (
+        //         d.length > 0 &&
+        //         d[0].from < this.modEnd &&
+        //         d[0].name !== "par"
+        //     ) {
+        //         this.newEnding()
+        //     } else {
+        //         this.ended = true
+        //         return { type: "", value: "", place: this.modEnd }
+        //     }
+        // }
 
         let curchar = this.raw.charAt(this.index)
         let nextchar = "",
