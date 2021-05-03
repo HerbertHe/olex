@@ -11,7 +11,7 @@ export const mount = (that: OLEX, packages: PackagesType): void => {
     ;[...packages.values()].forEach((item: IPackage) => {
         if (!!item.mount) {
             // 实例this指针传递
-            item.mount.call(that)
+            item.mount.call(null, that._context)
         }
     })
 }

@@ -7,9 +7,9 @@ const scope = "olex-core"
  * 挂载生命周期
  * @param this OLEX对象实例指针
  */
-function mount(this: IOLEXContext) {
-    this.setContextVariable(scope, "测试", "自定义上下文参数测试")
-    console.log(this.getContextVariable(scope, "测试"))
+function mount(context: IOLEXContext) {
+    context.setContextVariable(scope, "测试", "自定义上下文参数测试")
+    console.log(context.getContextVariable(scope, "测试"))
 }
 
 // 核心解析器

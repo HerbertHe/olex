@@ -15,6 +15,7 @@ import { usePackage } from "./chain/use"
 // import { OLEX_Lexer } from "./lex/lexer"
 import { OLEX_Parser } from "./parse/parser"
 import { ifBrowser, makeNewOLEXError } from "./utils"
+import { OLEXContext } from "./context"
 
 interface IOLEXConstructor {
     tex: string
@@ -27,7 +28,7 @@ class OLEX {
     private _container: string | undefined = ""
     private _options: IOptions = {}
     // 上下文参数
-    private _context: Map<string, any> = new Map<string, any>()
+    public _context: OLEXContext = new OLEXContext()
     private _packages: PackagesType = new Map<string, IPackage>()
     private _parsers: ParsersType = new Map<string, CommandParsersType>()
     private _supportedCommands: SupportedCommandsType = new Set<string>()
@@ -103,24 +104,6 @@ class OLEX {
     checkPackage = (packName: string) => {
         const pack = this.showPackage(packName)
         checkPackageInfo(pack)
-    }
-
-    /**
-     * 自定义上下文参量
-     * @param scope 宏包作用域
-     * @param name 参数名
-     * @param value 参数值
-     */
-    setContextVariable = (scope: string, name: string, value: any) => {
-        this._context.set(`${scope}-${name}`, value)
-    }
-    /**
-     * 获取自定义的上下文参量
-     * @param scope 宏包作用域
-     * @param name 参数名
-     */
-    getContextVariable = (scope: string, name: string) => {
-        return this._context.get(`${scope}-${name}`)
     }
 
     // 输出结果
